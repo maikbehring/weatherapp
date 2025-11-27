@@ -181,7 +181,7 @@ type MittwaldInputEvent = {
 			<Heading>Aktuelle Wetterübersicht</Heading>
 			<Text>Wähle eine Stadt aus, um die aktuellen Wetterdaten zu laden.</Text>
 			<Content>
-				<Heading level="3">Deine lokale Adresse</Heading>
+				<Heading level={3}>Deine lokale Adresse</Heading>
 				<Text>
 					Ergänze deine Adresse, falls du das Wetter für einen anderen Ort im
 					Blick behalten möchtest.
@@ -217,7 +217,7 @@ type MittwaldInputEvent = {
 			</Content>
 
 			<Content>
-				<Heading level="3">Schnellauswahl</Heading>
+				<Heading level={3}>Schnellauswahl</Heading>
 				<Text>Tippe auf eine Stadt, um sofort neue Messwerte zu laden.</Text>
 				<SegmentedControl
 					aria-label="Stadt auswählen"
@@ -356,7 +356,7 @@ function WeatherCard({
 					gap: "0.25rem",
 				}}
 			>
-				<Heading level="2">{title}</Heading>
+				<Heading level={2}>{title}</Heading>
 				{subtitle && <Text>{subtitle}</Text>}
 				<Text>Stand: {timestamp}</Text>
 				<AlertBadge tone={badgeTone}>{description}</AlertBadge>
@@ -385,7 +385,7 @@ function WeatherCard({
 						gap: "0.75rem",
 					}}
 				>
-					<Heading level="3">7-Tage-Vorschau</Heading>
+					<Heading level={3}>7-Tage-Vorschau</Heading>
 					<CartesianChart
 						height="260px"
 						data={forecast.map((day) => ({
@@ -520,7 +520,7 @@ function StatTile({
 				padding: "1rem",
 			}}
 		>
-			<Heading level={emphasize ? "1" : "2"} style={{ margin: 0 }}>
+			<Heading level={emphasize ? 1 : 2} style={{ margin: 0 }}>
 				{value}
 			</Heading>
 			<Text>{label}</Text>
