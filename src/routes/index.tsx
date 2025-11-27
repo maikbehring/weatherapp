@@ -372,10 +372,7 @@ function WeatherCard({
 					>
 						<CartesianGrid />
 						<XAxis dataKey="label" />
-						<YAxis
-							domain={chartDomain}
-							tickFormatter={(value: number) => `${value}°C`}
-						/>
+						<YAxis domain={chartDomain} />
 						<ChartLegend />
 						<Line
 							dataKey="max"
