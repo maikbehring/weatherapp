@@ -306,6 +306,7 @@ function WeatherCard({
 	const forecastSummary = forecast ? summarizeForecast(forecast) : null;
 
 	// Calculate Y-axis domain for the chart to handle negative values properly
+	// Round to whole numbers to avoid floating-point precision issues in labels
 	const chartDomain = forecast
 		? (() => {
 				const allTemps = forecast.flatMap((day) => [day.maxTemp, day.minTemp]);
@@ -314,7 +315,10 @@ function WeatherCard({
 				// Add padding (10% of range) to both sides
 				const range = maxTemp - minTemp;
 				const padding = range * 0.1;
-				return [minTemp - padding, maxTemp + padding] as [number, number];
+				// Round to whole numbers (floor for min, ceil for max)
+				const roundedMin = Math.floor(minTemp - padding);
+				const roundedMax = Math.ceil(maxTemp + padding);
+				return [roundedMin, roundedMax] as [number, number];
 		  })()
 		: undefined;
 
