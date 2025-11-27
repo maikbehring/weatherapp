@@ -305,6 +305,19 @@ function WeatherCard({
 }: WeatherCardProps) {
 	const forecastSummary = forecast ? summarizeForecast(forecast) : null;
 
+	// Calculate Y-axis domain for the chart to handle negative values properly
+	const chartDomain = forecast
+		? (() => {
+				const allTemps = forecast.flatMap((day) => [day.maxTemp, day.minTemp]);
+				const minTemp = Math.min(...allTemps);
+				const maxTemp = Math.max(...allTemps);
+				// Add padding (10% of range) to both sides
+				const range = maxTemp - minTemp;
+				const padding = range * 0.1;
+				return [minTemp - padding, maxTemp + padding] as [number, number];
+		  })()
+		: undefined;
+
 	return (
 		<LayoutCard
 			style={{
@@ -359,7 +372,10 @@ function WeatherCard({
 					>
 						<CartesianGrid />
 						<XAxis dataKey="label" />
-						<YAxis />
+						<YAxis
+							domain={chartDomain}
+							tickFormatter={(value: number) => `${value}°C`}
+						/>
 						<ChartLegend />
 						<Line
 							dataKey="max"
