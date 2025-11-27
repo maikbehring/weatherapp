@@ -70,7 +70,7 @@ function RouteComponent() {
 		queryFn: () =>
 			getWeather({
 				data: { cityId: selectedCityId },
-			} as Parameters<typeof getWeather>[0]),
+			} as any),
 		enabled: Boolean(selectedCityId),
 	});
 
@@ -78,7 +78,7 @@ function RouteComponent() {
 		mutationFn: (address: string) =>
 			getWeatherByAddress({
 				data: { address },
-			} as Parameters<typeof getWeatherByAddress>[0]),
+			} as any),
 	});
 
 	const [activeWeatherSource, setActiveWeatherSource] = useState<
@@ -151,15 +151,15 @@ function RouteComponent() {
 					Ergänze deine Adresse, falls du das Wetter für einen anderen Ort im
 					Blick behalten möchtest.
 				</Text>
+				<Text>Adresse</Text>
 				<TextField
-					label="Adresse"
 					placeholder="z. B. Musterstraße 12, 12345 Musterstadt"
 					value={customAddress}
-					onChange={(e) => {
+					onChange={(e: any) => {
 						const value = typeof e === "string" 
 							? e 
-							: (e.target as HTMLInputElement)?.value ?? "";
-						setCustomAddress(value);
+							: e?.target?.value ?? e?.detail?.value ?? "";
+						setCustomAddress(String(value || ""));
 					}}
 				/>
 				<Button
