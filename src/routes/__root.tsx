@@ -1,6 +1,9 @@
 import {
+	Content,
+	Heading,
 	LayoutCard,
 	NotificationProvider,
+	Text,
 } from "@mittwald/flow-remote-react-components";
 import RemoteRoot from "@mittwald/flow-remote-react-components/RemoteRoot";
 import type { QueryClient } from "@tanstack/react-query";
@@ -35,6 +38,31 @@ export const Route = createRootRouteWithContext<{
 });
 
 function RootComponent() {
+	// Check if we're in a browser without mittwald context
+	const isDirectBrowserAccess =
+		typeof window !== "undefined" &&
+		!window.location.search.includes("mittwald") &&
+		!document.referrer.includes("mittwald");
+
+	if (isDirectBrowserAccess) {
+		return (
+			<RootDocument>
+				<LayoutCard>
+					<Content style={{ padding: "2rem", textAlign: "center" }}>
+						<Heading level={1}>mittwald Extension</Heading>
+						<Text>
+							Diese Extension ist für die Verwendung im mittwald mStudio
+							konzipiert.
+						</Text>
+						<Text>
+							Bitte öffnen Sie die Extension über das mittwald mStudio.
+						</Text>
+					</Content>
+				</LayoutCard>
+			</RootDocument>
+		);
+	}
+
 	return (
 		<RootDocument>
 			<RemoteRoot>

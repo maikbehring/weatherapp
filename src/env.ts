@@ -16,4 +16,21 @@ const envSchema = {
 };
 
 // Validate and clean the environment
-export const env = cleanEnv(process.env, envSchema);
+// Only validate on server-side, not in browser
+let env: ReturnType<typeof cleanEnv<typeof envSchema>>;
+
+if (typeof window === "undefined") {
+	// Server-side: validate all env vars
+	env = cleanEnv(process.env, envSchema);
+} else {
+	// Client-side: use defaults (env vars are not available in browser anyway)
+	env = {
+		DATABASE_URL: "postgresql://localhost:5432/dummy",
+		PRISMA_FIELD_ENCRYPTION_KEY: "dummy-key",
+		EXTENSION_ID: "",
+		EXTENSION_SECRET: "",
+		NODE_ENV: "development",
+	} as ReturnType<typeof cleanEnv<typeof envSchema>>;
+}
+
+export { env };

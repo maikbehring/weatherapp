@@ -16,8 +16,28 @@ const globalForPrisma = globalThis as unknown as {
 	prisma: ReturnType<typeof createPrismaClient> | undefined;
 };
 
-export const db = globalForPrisma.prisma ?? createPrismaClient();
+// Only initialize Prisma on server-side
+// In browser, this will be undefined and should not be used
+const getDb = () => {
+	if (typeof window !== "undefined") {
+		// Browser: return a dummy object that throws if used
+		return new Proxy({} as ReturnType<typeof createPrismaClient>, {
+			get() {
+				throw new Error(
+					"Database access is only available server-side. This extension should be accessed through mittwald mStudio.",
+				);
+			},
+		});
+	}
+
+	// Server-side: initialize Prisma
+	return globalForPrisma.prisma ?? createPrismaClient();
+};
+
+export const db = getDb();
 
 export type PrismaInstance = typeof db;
 
-globalForPrisma.prisma = db;
+if (typeof window === "undefined") {
+	globalForPrisma.prisma = db as ReturnType<typeof createPrismaClient>;
+}
