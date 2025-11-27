@@ -402,13 +402,11 @@ function WeatherCard({
 							dataKey="max"
 							color="sea-green"
 							type="monotone"
-							strokeWidth={2}
 						/>
 						<Line
 							dataKey="min"
 							color="sea-blue"
 							type="monotone"
-							strokeWidth={2}
 						/>
 					</CartesianChart>
 					{forecastSummary && (
