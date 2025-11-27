@@ -17,7 +17,7 @@ import {
 } from "@mittwald/flow-remote-react-components";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { createFileRoute } from "@tanstack/react-router";
-import { useMemo, useState, type ChangeEvent } from "react";
+import { useMemo, useState } from "react";
 import { cities, type CityId } from "~/constants/cities";
 import { getWeather } from "~/server/functions/getWeather";
 import { getWeatherByAddress } from "~/server/functions/getWeatherByAddress";
@@ -70,7 +70,7 @@ function RouteComponent() {
 		queryFn: () =>
 			getWeather({
 				data: { cityId: selectedCityId },
-			}),
+			} as Parameters<typeof getWeather>[0]),
 		enabled: Boolean(selectedCityId),
 	});
 
@@ -78,7 +78,7 @@ function RouteComponent() {
 		mutationFn: (address: string) =>
 			getWeatherByAddress({
 				data: { address },
-			}),
+			} as Parameters<typeof getWeatherByAddress>[0]),
 	});
 
 	const [activeWeatherSource, setActiveWeatherSource] = useState<
@@ -105,41 +105,6 @@ function RouteComponent() {
 		return describeWeatherCode(weatherData.weather.weathercode);
 	}, [weatherData]);
 
-type MittwaldInputEvent = {
-	detail?: { value?: string | null } | null;
-	target?: { value?: string | null } | null;
-	currentTarget?: { value?: string | null } | null;
-};
-
-	const handleAddressInput = (
-	event: ChangeEvent<HTMLInputElement> | MittwaldInputEvent | string,
-	) => {
-	if (typeof event === "string") {
-		setCustomAddress(event);
-		return;
-	}
-
-	const possibleDetail =
-		typeof event === "object" && "detail" in event
-			? (event as MittwaldInputEvent).detail
-			: undefined;
-
-	const detailValue =
-		typeof possibleDetail === "object" ? possibleDetail?.value : undefined;
-
-	const possibleTarget =
-		typeof event === "object" && "target" in event
-			? (event as MittwaldInputEvent).target
-			: undefined;
-
-	const targetValue =
-		possibleTarget?.value ??
-		("currentTarget" in (event as MittwaldInputEvent)
-			? (event as MittwaldInputEvent).currentTarget?.value ?? undefined
-			: undefined);
-
-	setCustomAddress((detailValue ?? targetValue ?? "").toString());
-	};
 
 	const handleAddressSubmit = () => {
 		const trimmedAddress = customAddress.trim();
@@ -190,8 +155,12 @@ type MittwaldInputEvent = {
 					label="Adresse"
 					placeholder="z. B. Musterstraße 12, 12345 Musterstadt"
 					value={customAddress}
-					onInput={handleAddressInput}
-					onChange={handleAddressInput}
+					onChange={(e) => {
+						const value = typeof e === "string" 
+							? e 
+							: (e.target as HTMLInputElement)?.value ?? "";
+						setCustomAddress(value);
+					}}
 				/>
 				<Button
 					onPress={handleAddressSubmit}
