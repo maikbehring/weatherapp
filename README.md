@@ -1,6 +1,19 @@
-# My mittwald Extension
+# Weather App - mittwald Extension
 
-This is a mittwald extension generated with the mittvibes CLI tool.
+Eine Wetter-App als mittwald Extension, die aktuelle Wetterdaten und eine 7-Tage-Vorschau anzeigt. Die App nutzt mittwald Flow Remote React Components für eine konsistente UI-Erfahrung im mStudio.
+
+## Features
+
+- 🌤️ **Aktuelle Wetterdaten** für ausgewählte Städte (Berlin, Hamburg, München, Köln)
+- 📍 **Adresssuche** - Wetter für beliebige Adressen abrufen
+- 📊 **7-Tage-Vorschau** mit interaktivem Chart (CartesianChart)
+- 🎨 **mittwald Flow Components** - Native UI-Komponenten für konsistentes Design
+- 🌡️ **Temperatur-Badges** - Farbcodierte Anzeige je nach Temperatur
+- 📈 **Min/Max-Übersicht** - Höchste und niedrigste Temperaturen der Woche
+
+## Wetterdatenquelle
+
+Die App nutzt die [Open-Meteo API](https://open-meteo.com/) für kostenlose Wetterdaten ohne API-Key.
 
 ## Getting Started
 
@@ -94,6 +107,32 @@ src/
 - **Webhooks**: mitthooks library
 - **Code Quality**: Biome (linting & formatting)
 - **Testing**: Vitest
+
+## Deployment auf Netlify
+
+1. **Repository verbinden**:
+   - Auf [app.netlify.com](https://app.netlify.com) → "Add new site" → "Import an existing project"
+   - GitHub-Repo `maikbehring/weatherapp` auswählen
+
+2. **Build Settings**:
+   - Build command: `pnpm build`
+   - Publish directory: `dist`
+   - Node version: `20.11.1` (optional, in Environment Variables setzen)
+
+3. **Environment Variables** (in Netlify Settings):
+   ```
+   DATABASE_URL=postgresql://...
+   PRISMA_FIELD_ENCRYPTION_KEY=...
+   EXTENSION_ID=...
+   EXTENSION_SECRET=...
+   NODE_ENV=production
+   ```
+
+4. **Deploy**: Netlify baut und deployed automatisch bei jedem Push zu `main`
+
+5. **mStudio konfigurieren**:
+   - Webhook URL: `https://deine-app.netlify.app/api/webhooks/mittwald`
+   - Anchor URLs: `https://deine-app.netlify.app`
 
 ## Contributing
 
