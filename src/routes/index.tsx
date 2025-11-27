@@ -195,7 +195,7 @@ type MittwaldInputEvent = {
 				/>
 				<Button
 					onPress={handleAddressSubmit}
-					disabled={!customAddress.trim() || customWeatherMutation.isPending}
+					isDisabled={!customAddress.trim() || customWeatherMutation.isPending}
 				>
 					{customWeatherMutation.isPending
 						? "Adresse wird geladen …"
@@ -262,7 +262,6 @@ type MittwaldInputEvent = {
 							weatherData.weather.weathercode,
 							weatherData.weather.temperature,
 						)}
-						badgeTone={getTemperatureTone(weatherData.weather.temperature)}
 						forecast={weatherData.forecast}
 					/>
 				)
@@ -287,9 +286,6 @@ type MittwaldInputEvent = {
 					weathercode={customWeatherMutation.data.weather.weathercode}
 					funMessage={getFunMessage(
 						customWeatherMutation.data.weather.weathercode,
-						customWeatherMutation.data.weather.temperature,
-					)}
-					badgeTone={getTemperatureTone(
 						customWeatherMutation.data.weather.temperature,
 					)}
 					forecast={customWeatherMutation.data.forecast}
@@ -324,7 +320,6 @@ interface WeatherCardProps {
 	windspeed: number;
 	weathercode: number;
 	funMessage: string;
-	badgeTone: "danger" | "warning" | "success" | "informational";
 	forecast?: ForecastDay[];
 }
 
@@ -337,7 +332,6 @@ function WeatherCard({
 	windspeed,
 	weathercode,
 	funMessage,
-	badgeTone,
 	forecast,
 }: WeatherCardProps) {
 	const forecastSummary = forecast ? summarizeForecast(forecast) : null;
@@ -359,7 +353,7 @@ function WeatherCard({
 				<Heading level={2}>{title}</Heading>
 				{subtitle && <Text>{subtitle}</Text>}
 				<Text>Stand: {timestamp}</Text>
-				<AlertBadge tone={badgeTone}>{description}</AlertBadge>
+				<AlertBadge>{description}</AlertBadge>
 			<Text style={{ fontStyle: "italic" }}>{funMessage}</Text>
 			</Content>
 
@@ -452,22 +446,6 @@ function getFunMessage(weathercode: number, temperature: number) {
 	}
 
 	return "Mittwald meint: Immer schön wetterfest deployen!";
-}
-
-function getTemperatureTone(temperature: number): WeatherCardProps["badgeTone"] {
-	if (temperature <= 0) {
-		return "informational";
-	}
-
-	if (temperature < 15) {
-		return "warning";
-	}
-
-	if (temperature < 25) {
-		return "success";
-	}
-
-	return "danger";
 }
 
 function describeWeatherCode(code: number) {
