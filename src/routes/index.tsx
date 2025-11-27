@@ -360,7 +360,7 @@ function WeatherCard({
 				{subtitle && <Text>{subtitle}</Text>}
 				<Text>Stand: {timestamp}</Text>
 				<AlertBadge tone={badgeTone}>{description}</AlertBadge>
-			<Text italic>{funMessage}</Text>
+			<Text style={{ fontStyle: "italic" }}>{funMessage}</Text>
 			</Content>
 
 			<Content
