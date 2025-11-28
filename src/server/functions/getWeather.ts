@@ -1,3 +1,4 @@
+import "@reduxjs/toolkit"; // Force-bundle for mittwald remote components (server-side)
 import { createServerFn } from "@tanstack/react-start";
 import { z } from "zod";
 import { verifyAccessToInstance } from "~/middlewares/verify-access-to-instance";
