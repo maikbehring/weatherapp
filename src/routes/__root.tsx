@@ -1,9 +1,6 @@
 import {
-	Content,
-	Heading,
 	LayoutCard,
 	NotificationProvider,
-	Text,
 } from "@mittwald/flow-remote-react-components";
 import RemoteRoot from "@mittwald/flow-remote-react-components/RemoteRoot";
 import type { QueryClient } from "@tanstack/react-query";
