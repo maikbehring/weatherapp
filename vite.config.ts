@@ -48,7 +48,10 @@ export default defineConfig({
     ],
   },
   optimizeDeps: {
-    include: ["@mittwald/flow-remote-react-components"],
+    include: [
+      "@mittwald/flow-remote-react-components",
+      "@reduxjs/toolkit", // Required by mittwald remote components
+    ],
     exclude: ["@mittwald/ext-bridge"],
   },
 });
