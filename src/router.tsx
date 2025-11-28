@@ -26,6 +26,8 @@ export function createRouter() {
 			defaultPreload: "intent",
 			defaultErrorComponent: DefaultCatchBoundary,
 			defaultNotFoundComponent: () => <NotFound />,
+			// Deaktiviere SSR - Extension läuft nur client-seitig im iframe
+			defaultSsr: false,
 		}),
 		queryClient,
 	);
