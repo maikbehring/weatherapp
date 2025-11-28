@@ -1,0 +1,4 @@
+/*
+  Content-Security-Policy: frame-ancestors https://studio.mittwald.de https://*.mittwald.de;
+  X-Frame-Options: allow-from https://studio.mittwald.de
+
