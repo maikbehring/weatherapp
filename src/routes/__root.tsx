@@ -15,6 +15,9 @@ import { TanStackRouterDevtools } from "@tanstack/react-router-devtools";
 import type { ReactNode } from "react";
 import { useEffect, useState } from "react";
 
+type RemoteRootComponent = (typeof import("@mittwald/flow-remote-react-components/RemoteRoot"))["default"];
+type ReduxProviderComponent = (typeof import("~/providers/ReduxProvider"))["ReduxProvider"];
+
 export const Route = createRootRouteWithContext<{
 	queryClient: QueryClient;
 }>()({
@@ -38,10 +41,10 @@ export const Route = createRootRouteWithContext<{
 function RootComponent() {
 	const [isClient, setIsClient] = useState(false);
 	const [isEmbedded, setIsEmbedded] = useState(false);
-	const [RemoteRoot, setRemoteRoot] =
-		useState<typeof import("@mittwald/flow-remote-react-components/RemoteRoot").default | null>(
-			null,
-		);
+	const [RemoteRootComponent, setRemoteRootComponent] =
+		useState<RemoteRootComponent | null>(null);
+	const [ReduxProviderComponent, setReduxProviderComponent] =
+		useState<ReduxProviderComponent | null>(null);
 
 	useEffect(() => {
 		setIsClient(true);
@@ -51,18 +54,24 @@ function RootComponent() {
 			setIsEmbedded(false);
 		}
 
-		// Dynamically import RemoteRoot only on client-side to avoid SSR issues with @reduxjs/toolkit
 		if (typeof window !== "undefined") {
-			import("@mittwald/flow-remote-react-components/RemoteRoot").then(
-				(module) => {
-					setRemoteRoot(() => module.default);
-				},
-			);
+			// Dynamically import both to avoid SSR bundling issues
+			Promise.all([
+				import("@mittwald/flow-remote-react-components/RemoteRoot").then(
+					(module) => module.default,
+				),
+				import("~/providers/ReduxProvider").then(
+					(module) => module.ReduxProvider,
+				),
+			]).then(([RemoteRoot, ReduxProvider]) => {
+				setRemoteRootComponent(() => RemoteRoot);
+				setReduxProviderComponent(() => ReduxProvider);
+			});
 		}
 	}, []);
 
 	const renderContent = () => {
-		if (!isClient || !RemoteRoot) {
+		if (!isClient || !RemoteRootComponent || !ReduxProviderComponent) {
 			return (
 				<LayoutCard>
 					<Text>Extension wird initialisiert …</Text>
@@ -82,14 +91,19 @@ function RootComponent() {
 			);
 		}
 
+		const RemoteRoot = RemoteRootComponent;
+		const ReduxProvider = ReduxProviderComponent;
+
 		return (
-			<RemoteRoot>
-				<NotificationProvider>
-					<LayoutCard>
-						<Outlet />
-					</LayoutCard>
-				</NotificationProvider>
-			</RemoteRoot>
+			<ReduxProvider>
+				<RemoteRoot>
+					<NotificationProvider>
+						<LayoutCard>
+							<Outlet />
+						</LayoutCard>
+					</NotificationProvider>
+				</RemoteRoot>
+			</ReduxProvider>
 		);
 	};
 
