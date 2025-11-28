@@ -1,6 +1,7 @@
 import {
 	LayoutCard,
 	NotificationProvider,
+	Text,
 } from "@mittwald/flow-remote-react-components";
 import RemoteRoot from "@mittwald/flow-remote-react-components/RemoteRoot";
 import type { QueryClient } from "@tanstack/react-query";
@@ -13,6 +14,7 @@ import {
 } from "@tanstack/react-router";
 import { TanStackRouterDevtools } from "@tanstack/react-router-devtools";
 import type { ReactNode } from "react";
+import { useEffect, useState } from "react";
 
 export const Route = createRootRouteWithContext<{
 	queryClient: QueryClient;
@@ -35,15 +37,29 @@ export const Route = createRootRouteWithContext<{
 });
 
 function RootComponent() {
+	const [isClient, setIsClient] = useState(false);
+
+	useEffect(() => {
+		setIsClient(true);
+	}, []);
+
 	return (
 		<RootDocument>
-			<RemoteRoot>
-				<NotificationProvider>
-					<LayoutCard>
-						<Outlet />
-					</LayoutCard>
-				</NotificationProvider>
-			</RemoteRoot>
+			{isClient ? (
+				<RemoteRoot>
+					<NotificationProvider>
+						<LayoutCard>
+							<Outlet />
+						</LayoutCard>
+					</NotificationProvider>
+				</RemoteRoot>
+			) : (
+				<LayoutCard>
+					<Text>
+						Lade mittwald Extension … Bitte öffne sie innerhalb des mStudio.
+					</Text>
+				</LayoutCard>
+			)}
 		</RootDocument>
 	);
 }
