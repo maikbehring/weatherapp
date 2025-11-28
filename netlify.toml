@@ -1,0 +1,11 @@
+[build]
+  command = "pnpm run build"
+  publish = "dist"
+
+# Allow the mittwald mStudio host (and its subdomains) to embed the extension.
+[[headers]]
+  for = "/*"
+  [headers.values]
+    Content-Security-Policy = "frame-ancestors https://studio.mittwald.de https://*.mittwald.de"
+    X-Frame-Options = "allow-from https://studio.mittwald.de"
+
