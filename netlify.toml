@@ -2,12 +2,9 @@
   command = "pnpm run build"
   publish = ".tanstack/start/build/client-dist"
 
-[functions]
-  directory = ".netlify/functions-internal"
-
 [[redirects]]
   from = "/*"
-  to = "/.netlify/functions/server"
+  to = "/index.html"
   status = 200
 
 [[edge_functions]]
