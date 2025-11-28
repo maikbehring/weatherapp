@@ -1,4 +1,5 @@
 import { StartClient } from "@tanstack/react-start";
+import "@reduxjs/toolkit";
 import { hydrateRoot } from "react-dom/client";
 import { createRouter } from "./router";
 
