@@ -1,9 +1,12 @@
 [build]
   command = "pnpm run build"
-  publish = "dist"
+  publish = ".tanstack/start/build/client-dist"
 
-# Configure functions to exclude Redux Toolkit from SSR bundle
+[build.environment]
+  NETLIFY_USE_PNPM = "true"
+
 [functions]
+  directory = ".netlify/functions-internal"
   node_bundler = "esbuild"
   external_node_modules = ["@reduxjs/toolkit", "react-redux"]
 
