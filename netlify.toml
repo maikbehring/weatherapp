@@ -2,6 +2,10 @@
   command = "pnpm run build"
   publish = "dist"
 
+# Configure functions to include @reduxjs/toolkit as external dependency
+[functions]
+  external_node_modules = ["@reduxjs/toolkit"]
+
 # Attach edge function to inject CSP headers for every response (static + SSR).
 [[edge_functions]]
   function = "frame-security"

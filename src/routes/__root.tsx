@@ -1,4 +1,3 @@
-import "@reduxjs/toolkit"; // Force-bundle for mittwald remote components (server-side)
 import {
 	LayoutCard,
 	NotificationProvider,
