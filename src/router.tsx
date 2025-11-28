@@ -26,8 +26,8 @@ export function createRouter() {
 			defaultPreload: "intent",
 			defaultErrorComponent: DefaultCatchBoundary,
 			defaultNotFoundComponent: () => <NotFound />,
-			// Deaktiviere SSR - Extension läuft nur client-seitig im iframe
-			defaultSsr: false,
+			// SSR aktiviert für HTML-Generierung, aber alle Redux/Recharts-Komponenten sind client-only
+			defaultSsr: true,
 		}),
 		queryClient,
 	);

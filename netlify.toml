@@ -2,9 +2,14 @@
   command = "pnpm run build"
   publish = ".tanstack/start/build/client-dist"
 
+[functions]
+  directory = ".netlify/functions-internal"
+  node_bundler = "esbuild"
+  external_node_modules = ["@reduxjs/toolkit", "react-redux"]
+
 [[redirects]]
   from = "/*"
-  to = "/index.html"
+  to = "/.netlify/functions/server"
   status = 200
 
 [[edge_functions]]
