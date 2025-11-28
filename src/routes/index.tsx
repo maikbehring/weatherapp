@@ -17,7 +17,7 @@ import {
 } from "@mittwald/flow-remote-react-components";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { createFileRoute } from "@tanstack/react-router";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { cities, type CityId } from "~/constants/cities";
 import { getWeather } from "~/server/functions/getWeather";
 import { getWeatherByAddress } from "~/server/functions/getWeatherByAddress";
@@ -58,6 +58,11 @@ function RouteComponent() {
 	const initialCityId = (cities[0]?.id ?? "") as CityId;
 	const [selectedCityId, setSelectedCityId] = useState<CityId>(initialCityId);
 	const [customAddress, setCustomAddress] = useState("");
+	const [isClient, setIsClient] = useState(false);
+
+	useEffect(() => {
+		setIsClient(true);
+	}, []);
 
 	const {
 		data: weatherData,
@@ -71,7 +76,7 @@ function RouteComponent() {
 			getWeather({
 				data: { cityId: selectedCityId },
 			} as any),
-		enabled: Boolean(selectedCityId),
+		enabled: isClient && Boolean(selectedCityId),
 	});
 
 	const customWeatherMutation = useMutation({
