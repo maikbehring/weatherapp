@@ -11,8 +11,8 @@ import { useMutation, useQuery } from "@tanstack/react-query";
 import { createFileRoute } from "@tanstack/react-router";
 import { useEffect, useMemo, useState } from "react";
 import { cities, type CityId } from "~/constants/cities";
-import { getWeather } from "~/server/functions/getWeather";
-import { getWeatherByAddress } from "~/server/functions/getWeatherByAddress";
+import { getWeather } from "~/server/api/getWeather";
+import { getWeatherByAddress } from "~/server/api/getWeatherByAddress";
 import { WeatherCard } from "~/components/WeatherCard";
 
 const weatherCodeDescriptions: Record<number, string> = {
