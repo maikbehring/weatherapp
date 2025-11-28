@@ -38,30 +38,50 @@ export const Route = createRootRouteWithContext<{
 
 function RootComponent() {
 	const [isClient, setIsClient] = useState(false);
+	const [isEmbedded, setIsEmbedded] = useState(false);
 
 	useEffect(() => {
 		setIsClient(true);
+		try {
+			setIsEmbedded(window.self !== window.top);
+		} catch {
+			setIsEmbedded(false);
+		}
 	}, []);
 
-	return (
-		<RootDocument>
-			{isClient ? (
-				<RemoteRoot>
-					<NotificationProvider>
-						<LayoutCard>
-							<Outlet />
-						</LayoutCard>
-					</NotificationProvider>
-				</RemoteRoot>
-			) : (
+	const renderContent = () => {
+		if (!isClient) {
+			return (
+				<LayoutCard>
+					<Text>Extension wird initialisiert …</Text>
+				</LayoutCard>
+			);
+		}
+
+		if (!isEmbedded) {
+			return (
 				<LayoutCard>
 					<Text>
-						Lade mittwald Extension … Bitte öffne sie innerhalb des mStudio.
+						Diese Extension benötigt das mittwald mStudio. Bitte teste sie über
+						eine eingebettete mStudio-Sitzung oder verwende die mittwald CLI
+						Preview.
 					</Text>
 				</LayoutCard>
-			)}
-		</RootDocument>
-	);
+			);
+		}
+
+		return (
+			<RemoteRoot>
+				<NotificationProvider>
+					<LayoutCard>
+						<Outlet />
+					</LayoutCard>
+				</NotificationProvider>
+			</RemoteRoot>
+		);
+	};
+
+	return <RootDocument>{renderContent()}</RootDocument>;
 }
 
 function RootDocument({ children }: Readonly<{ children: ReactNode }>) {
