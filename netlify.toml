@@ -3,7 +3,7 @@
   publish = ".tanstack/start/build/client-dist"
 
 [functions]
-  directory = ".netlify/functions-internal"
+  directory = "netlify/functions"
   node_bundler = "esbuild"
   external_node_modules = ["@reduxjs/toolkit", "react-redux"]
 
