@@ -2,11 +2,13 @@
   command = "pnpm run build"
   publish = ".tanstack/start/build/client-dist"
 
-# SSR ist deaktiviert - keine Functions nötig
-# [functions]
-#   directory = ".netlify/functions-internal"
-#   node_bundler = "esbuild"
-#   external_node_modules = ["@reduxjs/toolkit", "react-redux"]
+[functions]
+  directory = ".netlify/functions-internal"
+
+[[redirects]]
+  from = "/*"
+  to = "/.netlify/functions/server"
+  status = 200
 
 [[edge_functions]]
   function = "frame-security"
