@@ -3,7 +3,6 @@ import {
 	NotificationProvider,
 	Text,
 } from "@mittwald/flow-remote-react-components";
-import RemoteRoot from "@mittwald/flow-remote-react-components/RemoteRoot";
 import type { QueryClient } from "@tanstack/react-query";
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import {
@@ -39,6 +38,10 @@ export const Route = createRootRouteWithContext<{
 function RootComponent() {
 	const [isClient, setIsClient] = useState(false);
 	const [isEmbedded, setIsEmbedded] = useState(false);
+	const [RemoteRoot, setRemoteRoot] =
+		useState<typeof import("@mittwald/flow-remote-react-components/RemoteRoot").default | null>(
+			null,
+		);
 
 	useEffect(() => {
 		setIsClient(true);
@@ -47,10 +50,19 @@ function RootComponent() {
 		} catch {
 			setIsEmbedded(false);
 		}
+
+		// Dynamically import RemoteRoot only on client-side to avoid SSR issues with @reduxjs/toolkit
+		if (typeof window !== "undefined") {
+			import("@mittwald/flow-remote-react-components/RemoteRoot").then(
+				(module) => {
+					setRemoteRoot(() => module.default);
+				},
+			);
+		}
 	}, []);
 
 	const renderContent = () => {
-		if (!isClient) {
+		if (!isClient || !RemoteRoot) {
 			return (
 				<LayoutCard>
 					<Text>Extension wird initialisiert …</Text>
