@@ -1,6 +1,6 @@
 [build]
   command = "pnpm run build"
-  publish = ".tanstack/start/build/client-dist"
+  publish = ".tanstack/start/build"
 
 [build.environment]
   NETLIFY_USE_PNPM = "true"
