@@ -2,23 +2,8 @@
   command = "pnpm run build"
   publish = "dist"
 
-# Allow the mittwald mStudio host (and its subdomains) to embed the extension.
-[[headers]]
-  for = "/*"
-  [headers.values]
-    Content-Security-Policy = "frame-ancestors https://studio.mittwald.de https://*.mittwald.de"
-    X-Frame-Options = "allow-from https://studio.mittwald.de"
-
-# Netlify serves SSR responses through internal functions, so set the same headers there.
-[[headers]]
-  for = "/.netlify/functions/*"
-  [headers.values]
-    Content-Security-Policy = "frame-ancestors https://studio.mittwald.de https://*.mittwald.de"
-    X-Frame-Options = "allow-from https://studio.mittwald.de"
-
-[[headers]]
-  for = "/.netlify/functions-internal/*"
-  [headers.values]
-    Content-Security-Policy = "frame-ancestors https://studio.mittwald.de https://*.mittwald.de"
-    X-Frame-Options = "allow-from https://studio.mittwald.de"
+# Attach edge function to inject CSP headers for every response (static + SSR).
+[[edge_functions]]
+  function = "frame-security"
+  path = "/*"
 
