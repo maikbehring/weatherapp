@@ -1,0 +1,25 @@
+services:
+  - type: web
+    name: weatherapp
+    env: node
+    plan: starter
+    buildCommand: pnpm install && NITRO_PRESET=node-server pnpm run build
+    startCommand: node .output/server/index.mjs
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: NITRO_PRESET
+        value: node-server
+      - key: PORT
+        fromService:
+          type: web
+          name: weatherapp
+          property: port
+    # Add your environment variables here:
+    # - key: DATABASE_URL
+    #   sync: false
+    # - key: EXTENSION_SECRET
+    #   sync: false
+    # - key: OPEN_METEO_API_URL
+    #   value: https://api.open-meteo.com/v1
+
