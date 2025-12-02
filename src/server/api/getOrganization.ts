@@ -1,8 +1,22 @@
-import { MittwaldAPIV2Client, assertStatus } from "@mittwald/api-client";
+import {
+	MittwaldAPIV2Client,
+	assertStatus,
+	ApiClientError,
+} from "@mittwald/api-client";
 import { getAccessToken } from "@mittwald/ext-bridge/node";
 import { createServerFn } from "@tanstack/react-start";
 import { verifyAccessToInstance } from "~/middlewares/verify-access-to-instance";
 import { env } from "~/env";
+
+function isPermissionDenied(error: unknown): boolean {
+	if (error instanceof ApiClientError) {
+		return error.status === 403;
+	}
+	if (error && typeof error === "object" && "status" in error) {
+		return error.status === 403;
+	}
+	return false;
+}
 
 export const getOrganization = createServerFn({ method: "POST" })
 	.middleware([verifyAccessToInstance])
@@ -16,8 +30,6 @@ export const getOrganization = createServerFn({ method: "POST" })
 
 			// Create mittwald API client
 			const client = await MittwaldAPIV2Client.newWithToken(accessToken);
-
-			let organizationId: string = context.contextId;
 
 			// Strategy 1: Try to get customer directly using contextId
 			try {
@@ -35,57 +47,48 @@ export const getOrganization = createServerFn({ method: "POST" })
 					projectCount: orgResult.data.projectCount,
 				};
 			} catch (customerError) {
-				// contextId is not a customer ID, try to get it from the project
-				console.log(
-					"contextId is not a customer ID, trying project:",
-					customerError instanceof Error ? customerError.message : String(customerError),
-				);
-			}
-
-			// Strategy 2: Get organization ID from project if contextId failed
-			if (context.projectId) {
-				try {
-					const projectResult = await client.project.getProject({
-						projectId: context.projectId,
-					});
-					assertStatus(projectResult, 200);
-
-					organizationId = projectResult.data.customerId;
-				} catch (projectError) {
+				// If it's a permission denied error, throw it immediately
+				if (isPermissionDenied(customerError)) {
 					console.error(
-						"Failed to get project:",
-						projectError instanceof Error
-							? projectError.message
-							: String(projectError),
+						"Permission denied when trying to get customer:",
+						customerError instanceof Error
+							? customerError.message
+							: String(customerError),
 					);
 					throw new Error(
-						`Failed to get organization: Could not get customer ID from project. Original error: ${projectError instanceof Error ? projectError.message : String(projectError)}`,
+						"Zugriff verweigert: Die Extension hat keine Berechtigung, Organisationsinformationen abzurufen. Bitte überprüfe die Extension-Berechtigungen im mittwald Marketplace.",
 					);
 				}
-			} else {
-				throw new Error(
-					"Failed to get organization: contextId is not a customer ID and no projectId available",
+
+				// If it's a 404, contextId might not be a customer ID
+				console.log(
+					"Customer not found with contextId, trying alternative approach:",
+					customerError instanceof Error
+						? customerError.message
+						: String(customerError),
 				);
 			}
 
-			// Get customer information using the organization ID from project
-			const result = await client.customer.getCustomer({
-				customerId: organizationId,
-			});
-			assertStatus(result, 200);
-
-			return {
-				id: result.data.customerId,
-				name: result.data.name,
-				customerNumber: result.data.customerNumber,
-				creationDate: result.data.creationDate,
-				memberCount: result.data.memberCount,
-				projectCount: result.data.projectCount,
-			};
+			// Strategy 2: If we can't get customer directly, return error
+			// (We can't use project.getProject because extension might not have permission)
+			throw new Error(
+				"Organisation konnte nicht abgerufen werden: contextId ist keine gültige Customer-ID und die Extension hat möglicherweise keine Berechtigung für alternative Abrufmethoden.",
+			);
 		} catch (error) {
 			console.error("Error in getOrganization:", error);
+			// Re-throw our custom error messages
+			if (error instanceof Error && error.message.includes("Zugriff verweigert")) {
+				throw error;
+			}
+			if (
+				error instanceof Error &&
+				error.message.includes("Organisation konnte nicht abgerufen werden")
+			) {
+				throw error;
+			}
+			// For other errors, provide a generic message
 			throw new Error(
-				`Failed to get organization: ${error instanceof Error ? error.message : String(error)}`,
+				`Fehler beim Abrufen der Organisation: ${error instanceof Error ? error.message : String(error)}`,
 			);
 		}
 	});
