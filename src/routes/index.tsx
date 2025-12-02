@@ -161,6 +161,7 @@ function RouteComponent() {
 					id={organizationData.id}
 					memberCount={organizationData.memberCount}
 					projectCount={organizationData.projectCount}
+					address={organizationData.address ?? null}
 				/>
 			)}
 

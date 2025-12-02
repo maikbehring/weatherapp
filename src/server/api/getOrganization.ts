@@ -38,6 +38,18 @@ export const getOrganization = createServerFn({ method: "POST" })
 				});
 				assertStatus(orgResult, 200);
 
+				const address = orgResult.data.owner?.address
+					? {
+							street: orgResult.data.owner.address.street || "",
+							houseNumber: orgResult.data.owner.address.houseNumber || "",
+							city: orgResult.data.owner.address.city || "",
+							zip: orgResult.data.owner.address.zip || "",
+							countryCode: orgResult.data.owner.address.countryCode || "",
+							addressPrefix:
+								orgResult.data.owner.address.addressPrefix || undefined,
+						}
+					: null;
+
 				return {
 					id: orgResult.data.customerId,
 					name: orgResult.data.name,
@@ -45,6 +57,7 @@ export const getOrganization = createServerFn({ method: "POST" })
 					creationDate: orgResult.data.creationDate,
 					memberCount: orgResult.data.memberCount,
 					projectCount: orgResult.data.projectCount,
+					address,
 				};
 			} catch (customerError) {
 				// If it's a permission denied error, throw it immediately
