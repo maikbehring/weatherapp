@@ -1,19 +1,21 @@
-import {
-	MittwaldAPIV2Client,
-	assertStatus,
-	ApiClientError,
-} from "@mittwald/api-client";
+import { MittwaldAPIV2Client, assertStatus } from "@mittwald/api-client";
 import { getAccessToken } from "@mittwald/ext-bridge/node";
 import { createServerFn } from "@tanstack/react-start";
 import { verifyAccessToInstance } from "~/middlewares/verify-access-to-instance";
 import { env } from "~/env";
 
 function isPermissionDenied(error: unknown): boolean {
-	if (error instanceof ApiClientError) {
-		return error.status === 403;
-	}
-	if (error && typeof error === "object" && "status" in error) {
-		return error.status === 403;
+	if (error && typeof error === "object") {
+		if ("status" in error && typeof error.status === "number") {
+			return error.status === 403;
+		}
+		// Check for ApiClientError-like structure
+		if ("response" in error) {
+			const response = (error as { response?: { status?: number } }).response;
+			if (response && typeof response.status === "number") {
+				return response.status === 403;
+			}
+		}
 	}
 	return false;
 }
