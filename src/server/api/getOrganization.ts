@@ -62,49 +62,35 @@ export const getOrganization = createServerFn({ method: "POST" })
 					address,
 				};
 			} catch (customerError) {
-				// If it's a permission denied error, throw it immediately
+				// If it's a permission denied error, log it and return null (optional feature)
 				if (isPermissionDenied(customerError)) {
-					console.error(
-						"Permission denied when trying to get customer:",
+					console.log(
+						"Permission denied when trying to get customer (optional feature, continuing without organization data):",
 						customerError instanceof Error
 							? customerError.message
 							: String(customerError),
 					);
-					throw new Error(
-						"Zugriff verweigert: Die Extension hat keine Berechtigung, Organisationsinformationen abzurufen. Bitte überprüfe die Extension-Berechtigungen im mittwald Marketplace.",
-					);
+					// Return null instead of throwing - this is an optional feature
+					return null;
 				}
 
 				// If it's a 404, contextId might not be a customer ID
 				console.log(
-					"Customer not found with contextId, trying alternative approach:",
+					"Customer not found with contextId:",
 					customerError instanceof Error
 						? customerError.message
 						: String(customerError),
 				);
+				// Return null for 404 as well - optional feature
+				return null;
 			}
-
-			// Strategy 2: If we can't get customer directly, return error
-			// (We can't use project.getProject because extension might not have permission)
-			throw new Error(
-				"Organisation konnte nicht abgerufen werden: contextId ist keine gültige Customer-ID und die Extension hat möglicherweise keine Berechtigung für alternative Abrufmethoden.",
-			);
 		} catch (error) {
-			console.error("Error in getOrganization:", error);
-			// Re-throw our custom error messages
-			if (error instanceof Error && error.message.includes("Zugriff verweigert")) {
-				throw error;
-			}
-			if (
-				error instanceof Error &&
-				error.message.includes("Organisation konnte nicht abgerufen werden")
-			) {
-				throw error;
-			}
-			// For other errors, provide a generic message
-			throw new Error(
-				`Fehler beim Abrufen der Organisation: ${error instanceof Error ? error.message : String(error)}`,
+			console.log(
+				"Error in getOrganization (optional feature, continuing without organization data):",
+				error,
 			);
+			// Return null instead of throwing - organization data is optional
+			return null;
 		}
 	});
 

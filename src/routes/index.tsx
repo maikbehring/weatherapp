@@ -102,6 +102,8 @@ function RouteComponent() {
 		queryKey: ["organization"],
 		queryFn: () => getOrganization({} as any),
 		enabled: isClient,
+		retry: false, // Don't retry on error - organization data is optional
+		// Organization data is optional, so we don't want to show errors to the user
 	});
 
 	const {
@@ -219,15 +221,6 @@ function RouteComponent() {
 
 			{isLoadingOrganization && (
 				<Text>Organisationsinformationen werden geladen …</Text>
-			)}
-
-			{organizationError && (
-				<Text>
-					Fehler beim Laden der Organisation:{" "}
-					{organizationError instanceof Error
-						? organizationError.message
-						: "Unbekannter Fehler"}
-				</Text>
 			)}
 
 			<Heading>Aktuelle Wetterübersicht</Heading>
