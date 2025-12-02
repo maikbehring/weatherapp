@@ -13,7 +13,9 @@ import { useEffect, useMemo, useState } from "react";
 import { cities, type CityId } from "~/constants/cities";
 import { getWeather } from "~/server/api/getWeather";
 import { getWeatherByAddress } from "~/server/api/getWeatherByAddress";
+import { getOrganization } from "~/server/api/getOrganization";
 import { WeatherCard } from "~/components/WeatherCard";
+import { OrganizationCard } from "~/components/OrganizationCard";
 
 const weatherCodeDescriptions: Record<number, string> = {
 	0: "Klarer Himmel",
@@ -56,6 +58,16 @@ function RouteComponent() {
 	useEffect(() => {
 		setIsClient(true);
 	}, []);
+
+	const {
+		data: organizationData,
+		isLoading: isLoadingOrganization,
+		error: organizationError,
+	} = useQuery({
+		queryKey: ["organization"],
+		queryFn: () => getOrganization({} as any),
+		enabled: isClient,
+	});
 
 	const {
 		data: weatherData,
@@ -141,6 +153,28 @@ function RouteComponent() {
 
 	return (
 		<Content>
+			{organizationData && (
+				<OrganizationCard
+					name={organizationData.name}
+					description={organizationData.description ?? undefined}
+					createdAt={organizationData.createdAt}
+					id={organizationData.id}
+				/>
+			)}
+
+			{isLoadingOrganization && (
+				<Text>Organisationsinformationen werden geladen …</Text>
+			)}
+
+			{organizationError && (
+				<Text>
+					Fehler beim Laden der Organisation:{" "}
+					{organizationError instanceof Error
+						? organizationError.message
+						: "Unbekannter Fehler"}
+				</Text>
+			)}
+
 			<Heading>Aktuelle Wetterübersicht</Heading>
 			<Text>Wähle eine Stadt aus, um die aktuellen Wetterdaten zu laden.</Text>
 			<Content>

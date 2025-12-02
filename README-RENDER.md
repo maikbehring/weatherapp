@@ -10,16 +10,25 @@ Diese Anleitung beschreibt, wie du die Weather App auf Render.com deployst.
 
 ## Schritt-für-Schritt Anleitung
 
-### 1. Repository mit Render verbinden
+### Option 1: Blueprint verwenden (render.yaml wird automatisch verwendet)
 
 1. Gehe zu [dashboard.render.com](https://dashboard.render.com)
-2. Klicke auf "New" → "Web Service"
+2. Klicke auf "New" → **"Blueprint"**
+3. Wähle "Connect a repository" und verbinde dein GitHub Repository
+4. Wähle das Repository `maikbehring/weatherapp` aus
+5. Render erkennt automatisch die `render.yaml` und erstellt alle Services
+6. Klicke auf "Apply" um das Blueprint zu deployen
+
+**Vorteil:** Die `render.yaml` wird automatisch verwendet, alle Einstellungen sind versioniert.
+
+### Option 2: Manuelles Web Service (render.yaml wird NICHT verwendet)
+
+1. Gehe zu [dashboard.render.com](https://dashboard.render.com)
+2. Klicke auf "New" → **"Web Service"**
 3. Wähle "Connect a repository" und verbinde dein GitHub Repository
 4. Wähle das Repository `maikbehring/weatherapp` aus
 
-### 2. Service-Konfiguration
-
-Render.com verwendet automatisch die `render.yaml` Datei, wenn sie im Repository vorhanden ist. Alternativ kannst du die Einstellungen manuell in der Render-UI konfigurieren:
+**Service-Konfiguration (manuell in der UI):**
 
 **Build Settings:**
 - **Build Command:** `pnpm install && NITRO_PRESET=node-server pnpm run build`
@@ -32,9 +41,9 @@ Render.com verwendet automatisch die `render.yaml` Datei, wenn sie im Repository
 - `EXTENSION_SECRET` (dein mittwald Extension Secret)
 - `OPEN_METEO_API_URL=https://api.open-meteo.com/v1` (optional, Standardwert)
 
-### 3. Manuelle Konfiguration (falls render.yaml nicht verwendet wird)
+### 3. Manuelle Konfiguration (nur bei Option 2)
 
-Falls du die `render.yaml` nicht verwendest, konfiguriere folgendes in der Render-UI:
+Falls du Option 2 (manuelles Web Service) gewählt hast, konfiguriere folgendes in der Render-UI:
 
 **Service Settings:**
 - **Name:** weatherapp
@@ -64,10 +73,18 @@ Falls du eine PostgreSQL-Datenbank benötigst:
 
 ### 6. Deploy
 
+**Bei Option 1 (Blueprint):**
+1. Klicke auf "Apply" im Blueprint
+2. Render erstellt alle Services automatisch basierend auf `render.yaml`
+3. Warte, bis der Build abgeschlossen ist
+
+**Bei Option 2 (Manuelles Web Service):**
 1. Klicke auf "Create Web Service"
 2. Render startet automatisch den Build-Prozess
 3. Warte, bis der Build abgeschlossen ist
-4. Die App ist unter `https://weatherapp.onrender.com` verfügbar (oder deinem benutzerdefinierten Domain)
+
+**Beide Optionen:**
+- Die App ist unter `https://weatherapp.onrender.com` verfügbar (oder deinem benutzerdefinierten Domain)
 
 ## Unterschiede zu Netlify
 
