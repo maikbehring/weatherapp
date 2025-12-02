@@ -156,9 +156,11 @@ function RouteComponent() {
 			{organizationData && (
 				<OrganizationCard
 					name={organizationData.name}
-					description={organizationData.description ?? undefined}
-					createdAt={organizationData.createdAt}
+					customerNumber={organizationData.customerNumber}
+					creationDate={organizationData.creationDate}
 					id={organizationData.id}
+					memberCount={organizationData.memberCount}
+					projectCount={organizationData.projectCount}
 				/>
 			)}
 

@@ -9,21 +9,25 @@ import {
 
 interface OrganizationCardProps {
 	name: string;
-	description?: string | null;
-	createdAt: string;
+	customerNumber: string;
+	creationDate: string;
 	id: string;
+	memberCount: number;
+	projectCount: number;
 }
 
 export function OrganizationCard({
 	name,
-	description,
-	createdAt,
+	customerNumber,
+	creationDate,
 	id,
+	memberCount,
+	projectCount,
 }: OrganizationCardProps) {
 	const formattedDate = new Intl.DateTimeFormat("de-DE", {
 		dateStyle: "medium",
 		timeStyle: "short",
-	}).format(new Date(createdAt));
+	}).format(new Date(creationDate));
 
 	return (
 		<LayoutCard
@@ -58,18 +62,16 @@ export function OrganizationCard({
 						<Text>{name}</Text>
 					</Content>
 
-					{description && (
-						<Content
-							style={{
-								display: "flex",
-								flexDirection: "column",
-								gap: "0.25rem",
-							}}
-						>
-							<Text style={{ fontWeight: "bold" }}>Beschreibung:</Text>
-							<Text>{description}</Text>
-						</Content>
-					)}
+					<Content
+						style={{
+							display: "flex",
+							flexDirection: "column",
+							gap: "0.25rem",
+						}}
+					>
+						<Text style={{ fontWeight: "bold" }}>Kundennummer:</Text>
+						<Text>{customerNumber}</Text>
+					</Content>
 
 					<Content
 						style={{
@@ -82,6 +84,28 @@ export function OrganizationCard({
 						<Text style={{ fontFamily: "monospace", fontSize: "0.875rem" }}>
 							{id}
 						</Text>
+					</Content>
+
+					<Content
+						style={{
+							display: "flex",
+							flexDirection: "column",
+							gap: "0.25rem",
+						}}
+					>
+						<Text style={{ fontWeight: "bold" }}>Mitglieder:</Text>
+						<Text>{memberCount}</Text>
+					</Content>
+
+					<Content
+						style={{
+							display: "flex",
+							flexDirection: "column",
+							gap: "0.25rem",
+						}}
+					>
+						<Text style={{ fontWeight: "bold" }}>Projekte:</Text>
+						<Text>{projectCount}</Text>
 					</Content>
 
 					<Content

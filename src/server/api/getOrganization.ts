@@ -27,11 +27,12 @@ export const getOrganization = createServerFn({ method: "POST" })
 			assertStatus(orgResult, 200);
 
 			return {
-				id: orgResult.data.id,
+				id: orgResult.data.customerId,
 				name: orgResult.data.name,
-				description: orgResult.data.description ?? null,
-				createdAt: orgResult.data.createdAt,
-				updatedAt: orgResult.data.updatedAt,
+				customerNumber: orgResult.data.customerNumber,
+				creationDate: orgResult.data.creationDate,
+				memberCount: orgResult.data.memberCount,
+				projectCount: orgResult.data.projectCount,
 			};
 		} catch (error) {
 			// If contextId is not a customer ID, try to get it from the project
@@ -58,11 +59,12 @@ export const getOrganization = createServerFn({ method: "POST" })
 		assertStatus(result, 200);
 
 		return {
-			id: result.data.id,
+			id: result.data.customerId,
 			name: result.data.name,
-			description: result.data.description ?? null,
-			createdAt: result.data.createdAt,
-			updatedAt: result.data.updatedAt,
+			customerNumber: result.data.customerNumber,
+			creationDate: result.data.creationDate,
+			memberCount: result.data.memberCount,
+			projectCount: result.data.projectCount,
 		};
 	});
 
