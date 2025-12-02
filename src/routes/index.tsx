@@ -38,6 +38,41 @@ const weatherCodeDescriptions: Record<number, string> = {
 	99: "Heftiges Gewitter mit Hagel",
 };
 
+interface Address {
+	street: string;
+	houseNumber: string;
+	city: string;
+	zip: string;
+	countryCode: string;
+	addressPrefix?: string;
+}
+
+function formatAddress(address: Address): string {
+	const parts: string[] = [];
+
+	if (address.addressPrefix) {
+		parts.push(address.addressPrefix);
+	}
+
+	const streetPart = [address.street, address.houseNumber]
+		.filter(Boolean)
+		.join(" ");
+	if (streetPart) {
+		parts.push(streetPart);
+	}
+
+	const cityPart = [address.zip, address.city].filter(Boolean).join(" ");
+	if (cityPart) {
+		parts.push(cityPart);
+	}
+
+	if (address.countryCode) {
+		parts.push(address.countryCode);
+	}
+
+	return parts.join(", ");
+}
+
 export const Route = createFileRoute("/")({
 	component: RouteComponent,
 });
@@ -94,6 +129,23 @@ function RouteComponent() {
 	const [activeWeatherSource, setActiveWeatherSource] = useState<
 		"city" | "custom"
 	>("city");
+
+	// Auto-fill address field with organization address
+	useEffect(() => {
+		// Only set if address is still empty and organization data is loaded successfully
+		if (
+			customAddress === "" &&
+			organizationData?.address &&
+			!organizationError &&
+			!isLoadingOrganization
+		) {
+			const formatted = formatAddress(organizationData.address);
+			if (formatted) {
+				setCustomAddress(formatted);
+			}
+		}
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, [organizationData, organizationError, isLoadingOrganization]);
 
 	const formattedTimestamp = useMemo(() => {
 		if (!weatherData) {
